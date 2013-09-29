@@ -1,4 +1,4 @@
-package example;
+package controller;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,13 +11,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@ContextConfiguration("file:src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml")
+@WebAppConfiguration("web.xml")
+@ContextConfiguration("classpath:mvc-dispatcher-servlet.xml")
 public class AppTests {
     private MockMvc mockMvc;
 
@@ -31,9 +32,18 @@ public class AppTests {
     }
 
     @Test
-    public void simple() throws Exception {
-        mockMvc.perform(get("/"))
+    public void simpleHello() throws Exception {
+        mockMvc.perform(get("/hello"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("hello"));
+                .andExpect(view().name("hello"))
+                .andExpect(model().attribute("message", "Hello world!"));
+    }
+
+    @Test
+    public void simpleBye() throws Exception {
+        mockMvc.perform(get("/bye"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("hello"))
+                .andExpect(model().attribute("message", "Good Bye!"));
     }
 }
